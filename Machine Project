@@ -3,7 +3,7 @@
  * Authors           : Letran, Jessica C. (ID Number)
  *                     Santos, Michaela Lynn L. (12505765)
  * Section           : S22A
- * Last Modified     : 3/00/26
+ * Last Modified     : 03/08/26
 */
 
 /* Preprocessor Directives */
@@ -11,6 +11,7 @@
 #include <stdbool.h>
 
 /* Definitions */
+#define MAX_SUBS 9
 typedef struct{
     int x;
     int y;
@@ -38,7 +39,7 @@ typedef struct{
 
 /* Variable Implementation */
 int val;
-Coordinate R[9], B[9], S[9], T[9];
+Coordinate R[MAX_SUBS], B[MAX_SUBS], S[MAX_SUBS], T[MAX_SUBS];
 bool good, go, start, over, found;
 
 /* Variable Initialization */
@@ -58,7 +59,7 @@ void Expand(Coordinate pos);
 void Remove(Coordinate pos){
     // go → (R = R − {pos})
     if(go){
-        for(int i=0; i<9; i++){
+        for(int i=0; i<MAX_SUBS; i++){
             if(R[i].x == pos.x && R[i].y == pos.y){
                 R[i].x = 0;
                 R[i].y = 0;
@@ -67,14 +68,14 @@ void Remove(Coordinate pos){
     }
     // ¬go → (B = B − {pos})
     else if(!go){
-        for(int i=0; i<9; i++){
+        for(int i=0; i<MAX_SUBS; i++){
             if(B[i].x == pos.x && B[i].y == pos.y){
                 B[i].x = 0;
                 B[i].y = 0;
             }
         }
     }
-    for(int i=0; i<9; i++){
+    for(int i=0; i<MAX_SUBS; i++){
             // S = S − {pos}
             if(S[i].x == pos.x && S[i].y == pos.y){
                 S[i].x = 0;
@@ -93,52 +94,56 @@ void Replace(Coordinate pos){
     found = false;
     if(go){
         // (go ∧ pos ∈ B) → (B = B − {pos} ∧ found = true)
-        for(int i=0; i<9; i++){
+        for(int i=0; i<MAX_SUBS; i++){
             if(pos.x == B[i].x && pos.y == B[i].y){
                 B[i].x = 0;
                 B[i].y = 0;
                 found = true;
             }
         }
+        bool EqualR = false;
         // (go ∧ pos ∈ R) → found = true
-        for(int i=0; i<9; i++){
+        for(int i=0; i<MAX_SUBS; i++){
             if(pos.x == R[i].x && pos.y == R[i].y){
                 found = true;
+                EqualR = true;
             }
         }
         // (go ∧ pos ̸∈ R) → (R = R ∪ {pos})
-        if(found == false){
-            for(int i=0; i<9; i++){
+        if(EqualR == false){
+            for(int i=0; i<MAX_SUBS; i++){
                 if(R[i].x == 0 && R[i].y == 0){
                     R[i].x = pos.x;
                     R[i].y = pos.y;
-                    i=9;
+                    i=MAX_SUBS;
                 }
             }
         }
     }
     if(!go){
         // (¬go ∧ pos ∈ R) → (R = R − {pos} ∧ found = true)
-        for(int i=0; i<9; i++){
+        for(int i=0; i<MAX_SUBS; i++){
             if(pos.x == R[i].x && pos.y == R[i].y){
                 R[i].x = 0;
                 R[i].y = 0;
                 found = true;
             }
         }
+        bool EqualB = false;
         // (¬go ∧ pos ∈ B) → found = true
-        for(int i=0; i<9; i++){
+        for(int i=0; i<MAX_SUBS; i++){
             if(pos.x == B[i].x && pos.y == B[i].y){
                 found = true;
+                EqualB = true;
             }
         }
         // (¬go ∧ pos ̸∈ B) → (B = B ∪ {pos})
-        if(found == false){
-            for(int i=0; i<9; i++){
+        if(EqualB == false){
+            for(int i=0; i<MAX_SUBS; i++){
                 if(B[i].x == 0 && B[i].y == 0){
                     B[i].x = pos.x;
                     B[i].y = pos.y;
-                    i=9;
+                    i=MAX_SUBS;
                 }
             }
         }
@@ -147,18 +152,18 @@ void Replace(Coordinate pos){
     if (found){
         bool EqualS = false;
         // check if pos is equal to S
-        for(int i=0; i<9; i++){
+        for(int i=0; i<MAX_SUBS; i++){
             if(S[i].x == pos.x && S[i].y == pos.y){
                     EqualS = true;
             }
         }
         if(EqualS == false){
-            for(int i=0; i<9; i++){
+            for(int i=0; i<MAX_SUBS; i++){
                 if(S[i].x == 0 && S[i].y == 0){
                     S[i].x = pos.x;
                     S[i].y = pos.y;
                     found = false;
-                    i=9;
+                    i=MAX_SUBS;
                 }
             }
         }
@@ -166,18 +171,18 @@ void Replace(Coordinate pos){
         if (EqualS == true){
             bool EqualT = false;
             // check if pos is equal to T
-            for(int i=0; i<9; i++){
+            for(int i=0; i<MAX_SUBS; i++){
                 if(T[i].x == pos.x && T[i].y == pos.y){
                     EqualT = true;
                 }
             }
             if(EqualT == false){
-                for(int i=0; i<9; i++){
+                for(int i=0; i<MAX_SUBS; i++){
                     if(T[i].x == 0 && T[i].y == 0){
                         T[i].x = pos.x;
                         T[i].y = pos.y;
                         Expand(pos);
-                        i=9;
+                        i=MAX_SUBS;
                     }
                 }
             }
