@@ -19,3 +19,22 @@ The group has signed up for a demo schedule.
 The group is present during the demo.
 For programs, the submitted files must compile successfully, the program must be running, and the screen outputs are relevant.
 The group can answer questions convincingly during the demo.
+
+
+/* Notes: */
+// M is the Board (3x3)
+// R and B is the players
+// go = player R's turn
+// ¬go = player B's turn
+// pos is a coordinate on M
+
+/* Conditions */
+// over ↔ (|F| = 3 ∨ val ≥ 20 ∨ ¬start ∧ (|R| > 0 ∧ |B| = 0 ∨ |R| = 0 ∧ |B| > 0))
+// val = N where N : {x ∈ Z+ ∪ {0} | x <= 16}
+// R, B, S, T, F ⊆ M where M : C × C (C : {x ∈ Z+ | x < 4})
+// good, go, start, over, found = V where V: {true, false}
+// F = M−(R ∪ B)
+
+// C = 1, 2, 3
+// N = 0-16
+// M = 9 subsets (3x3) = {(1,1), (1,2), (1,3), (2,1), (2,2), (2,3), (3,1), (3,2), (3,3)}
