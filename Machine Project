@@ -2,7 +2,7 @@
  * Authors           : Letran, Jessica C. (ID Number)
  *                   : Santos, Michaela Lynn L. (12505765)
  * Section           : S22A
- * Last Modified     : 03/20/26
+ * Last Modified     : 03/22/26
 */
 
 /* Preprocessor Directives */
@@ -288,12 +288,13 @@ void NextPlayerMove(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S
                         i=MAX_SUBS;
                 }     
             }
+
             *good = 1;
         }
         // (¬over ∧ ¬start ∧ (go ∧ pos ∈ R ∨ ¬go ∧ pos ∈ B)) → (Update(pos) ∧ good = true)
-        else {
+        else{
             for(int i=0; i<MAX_SUBS; i++) {
-                if((*go && equal(R[i], pos)) || (!go && equal(B[i], pos))) {
+                if((*go && equal(R[i], pos)) || (!(*go) && equal(B[i], pos))) {
                     Update(pos, R, B, S, T, *go, found, good);
                     *good = 1;
                 }
@@ -340,6 +341,41 @@ void GameOver(Coordinate R[], Coordinate B[], char result[]){
            
 }
 
+void PrintBoard(Coordinate R[], Coordinate B[]) {
+    char M[3][3];
+
+    printf("Board:\n\n");
+
+    // initialize
+    for(int i = 0; i < 3; i++) {
+        for(int j = 0; j < 3; j++) {
+            M[i][j] = 'x';
+        }
+    }
+
+    // place R
+    for(int i = 0; i < MAX_SUBS; i++) {
+        if(R[i].x != 0 && R[i].y != 0) {
+            M[R[i].x - 1][R[i].y - 1] = 'R';
+        }
+    }
+
+    // place B
+    for(int i = 0; i < MAX_SUBS; i++) {
+        if(B[i].x != 0 && B[i].y != 0) {
+            M[B[i].x - 1][B[i].y - 1] = 'B';
+        }
+    }
+
+    // print board
+    for(int i = 0; i < 3; i++) {
+        for(int j = 0; j < 3; j++) {
+            printf(" %c ", M[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
 
 int main(){
     /* Variable Implementation */
@@ -352,8 +388,8 @@ int main(){
     go = 1; //true
     start = 1; //true
     found = 0; //false
-    val = 0;
     over = 0; //false
+    val = 0;
     sizeR = 0;
     sizeB = 0; 
     sizeF = 0;
@@ -366,7 +402,9 @@ int main(){
         T[i] = (Coordinate){0,0};
     }
 
+    printf("Welcome to the Game!\n\n");
     while(!over){
+        PrintBoard(R, B);
         if(go){
             printf("Player R, Choose a Position\n");
         }
