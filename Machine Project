@@ -393,7 +393,6 @@ int main(){
     sizeR = 0;
     sizeB = 0; 
     sizeF = 0;
-    intersection = 0;
     // R, B, S, T = ∅
     for(int i=0; i<MAX_SUBS; i++){
         R[i] = (Coordinate){0,0};
@@ -423,9 +422,14 @@ int main(){
             sizeR = cardinality(R);
             sizeB = cardinality(B);
             //find intersection
+            intersection = 0;
             for(int i=0; i<MAX_SUBS; i++){
-                if(equal(R[i], B[i]))
-                    intersection++;
+                for(int j=0; j<MAX_SUBS; j++){
+                    if(equal(R[i], B[j]) && R[i].x != 0 && R[i].y != 0)
+                        intersection++;
+                }
+            }
+        }
             }
             // M minus union of R and B
             sizeF = MAX_SUBS - ((sizeR+sizeB)-intersection);
