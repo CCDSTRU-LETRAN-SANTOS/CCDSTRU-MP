@@ -160,13 +160,16 @@ void Replace(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coo
                     EqualT = 1;
             }
             if(!EqualT){
+                int trigger = 0;
                 for(int i=0; i<MAX_SUBS; i++){
                     if(T[i].x == 0 && T[i].y == 0){
                         T[i] = pos;
-                        Expand(pos, R, B, S, T, *go, found);
+                        trigger = 1;
                         i=MAX_SUBS;
                     }
                 }
+                if(trigger)
+                    Expand(pos, R, B, S, T, *go, found);
             }
         }
     }
