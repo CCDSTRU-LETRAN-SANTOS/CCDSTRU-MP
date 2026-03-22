@@ -432,8 +432,6 @@ int main(){
                         intersection++;
                 }
             }
-        }
-            }
             // M minus union of R and B
             sizeF = MAX_SUBS - ((sizeR+sizeB)-intersection);
 
