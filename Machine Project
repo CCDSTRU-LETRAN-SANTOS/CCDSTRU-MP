@@ -11,9 +11,13 @@
 
 /* Definitions */
 #define MAX_SUBS 9
+
+/**
+* Stores the coordinates of a subset
+*/
 typedef struct{
-    int x;
-    int y;
+    int x;      // stores the row
+    int y;      // stores the column
 } Coordinate;
 
 /* Function Prototypes */
@@ -21,20 +25,40 @@ void Remove(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coor
 void Replace(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coordinate T[], int *go, int *found);
 void Expand(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coordinate T[], int go, int *found);
 void Update(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coordinate T[], int go, int *found, int *good);
-void NextPlayerMove(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coordinate T[], int *go, int *good, int *start, int *val, int *over, int *found);
+void NextPlayerMove(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coordinate T[], 
+                    int *go, int *good, int *start, int *val, int *over, int *found);
 void GameOver(Coordinate R[], Coordinate B[], char result[]);
 
 /* Helper Functions */
-// check if equal
-int equal(Coordinate a, Coordinate b) {
+
+/**
+ * This function checks if two coordinates are equal
+ * @param a is the first coordinate
+ * @param b is the second coordinate
+ * @return 1 if the coordinates are equal, 0 if not
+ */
+int equal(Coordinate a, Coordinate b) 
+{
     return (a.x == b.x && a.y == b.y);
 }
-// check boundaries
-int valid(Coordinate p) {
+
+/**
+ * This function checks if the coordinate is within the board boundaries
+ * @param p is the coordinate to check
+ * @return 1 if it is within boundaries, 0 if not
+ */
+int valid(Coordinate p) 
+{
     return (p.x >= 1 && p.x <= 3 && p.y >= 1 && p.y <= 3);
 }
-// count cardinlity of set
-int cardinality(Coordinate p[MAX_SUBS]){
+
+/**
+ * This function counts the number of non-zero (not null) coordinates in a set
+ * @param p is an array of coordinates
+ * @return the number of set of coordinates in the array
+ */
+int cardinality(Coordinate p[MAX_SUBS])
+{
     int size = 0;
     for(int i=0; i<MAX_SUBS; i++) {
         if(p[i].x != 0 && p[i].y != 0)
@@ -44,78 +68,119 @@ int cardinality(Coordinate p[MAX_SUBS]){
 }
 
 /* Function Implementations */
-void Remove(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coordinate T[], int go){
-    for(int i=0; i<MAX_SUBS; i++){
+
+/**
+ * This function removes a coordinate from specific sets depending on the player's turn
+ * @param pos is the coordinate to remove
+ * @param R is the array of coordinates for player R
+ * @param B is the array of coordinates for player B
+ * @param S is the shared set of coordinates
+ * @param T is the temporary set of coordinates
+ * @param go is a flag indicating whose turn it is (1 for R, 0 for B)
+ */
+void Remove(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coordinate T[], int go)
+{
+    int i;
+
+    for(i=0; i<MAX_SUBS; i++)
+    {
         // go → (R = R − {pos})
-        if(go){ 
-            if(equal(R[i], pos)){
+        if(go)
+        { 
+            if(equal(R[i], pos))
+            {
                 R[i].x = 0;
                 R[i].y = 0;
             }
         }
         // ¬go → (B = B − {pos})
-        else {
-            if(equal(B[i], pos)){
+        else 
+        {
+            if(equal(B[i], pos))
+            {
                 B[i].x = 0;
                 B[i].y = 0;
             }
         }
         // S = S − {pos}
-        if(equal(S[i], pos)){
+        if(equal(S[i], pos))
+        {
             S[i].x = 0;
             S[i].y = 0;
         }
         // T = T − {pos}
-        if(equal(T[i], pos)){
+        if(equal(T[i], pos))
+        {
             T[i].x = 0;
             T[i].y = 0;
         }
     }
 }
 
-void Replace(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coordinate T[], int *go, int *found){
+/**
+ * This function replaces a coordinate in the player sets depending on the current turn
+ * This handles capturing opponent pieces, updating shared sets, and triggers expansion
+ * @param pos is the coordinate to process
+ * @param R is the array of coordinates for player R
+ * @param B is the array of coordinates for player B
+ * @param S is the shared set of coordinates
+ * @param T is the temporary set of coordinates
+ * @param go is a pointer to the current turn flag (1 for R, 0 for B)
+ * @param found is a pointer to a flag indicating if the coordinate was found in opponent's set
+ */
+void Replace(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coordinate T[], int *go, int *found)
+{
+    int EqualR=0, EqualB=0, EqualS=0, EqualT=0, trigger = 0, i;
+
     //found = false
     *found = 0;
 
-    if(*go){
-        int EqualR = 0;
-
-        for(int i=0; i<MAX_SUBS; i++){
+    if(*go)
+    {
+        for(i=0; i<MAX_SUBS; i++)
+        {
             // (go ∧ pos ∈ B) → (B = B − {pos} ∧ found = true)
-            if(equal(B[i], pos)){
+            if(equal(B[i], pos))
+            {
                 B[i].x = 0;
                 B[i].y = 0;
                 *found = 1;
             }
             // (go ∧ pos ∈ R) → found = true
-            if(equal(R[i], pos)){
+            if(equal(R[i], pos))
+            {
                 *found = 1;
                 EqualR = 1;
             }
         }
 
         // (go ∧ pos ̸∈ R) → (R = R ∪ {pos})
-        if(!EqualR){
-            for(int i=0; i<MAX_SUBS; i++){
-                if(R[i].x == 0 && R[i].y == 0){
+        if(!EqualR)
+        {
+            for(i=0; i<MAX_SUBS; i++)
+            {
+                if(R[i].x == 0 && R[i].y == 0)
+                {
                     R[i] = pos;
                     i=MAX_SUBS;
                 }
             }
         }
     }
-    else {
-        int EqualB = 0;
-
-        for(int i=0; i<MAX_SUBS; i++){
+    else 
+    {
+        for(i=0; i<MAX_SUBS; i++)
+        {
             // (¬go ∧ pos ∈ R) → (R = R − {pos} ∧ found = true)
-            if(equal(R[i], pos)){
+            if(equal(R[i], pos))
+            {
                 R[i].x = 0;
                 R[i].y = 0;
                 *found = 1;
             }
             // (¬go ∧ pos ∈ B) → found = true
-            if(equal(B[i], pos)){
+            if(equal(B[i], pos))
+            {
                 *found = 1;
                 EqualB = 1;
             }
@@ -123,8 +188,10 @@ void Replace(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coo
 
         // (¬go ∧ pos ̸∈ B) → (B = B ∪ {pos})
         if(!EqualB){
-            for(int i=0; i<MAX_SUBS; i++){
-                if(B[i].x == 0 && B[i].y == 0){
+            for(i=0; i<MAX_SUBS; i++)
+            {
+                if(B[i].x == 0 && B[i].y == 0)
+                {
                     B[i] = pos;
                     i=MAX_SUBS;
                 }
@@ -133,17 +200,20 @@ void Replace(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coo
     }
 
     // (found ∧ pos ̸∈ S) → (S = S ∪ {pos} ∧ found = false)
-    if (*found){
-        int EqualS = 0;
-
+    if (*found)
+    {
         // check if pos is equal to S
-        for(int i=0; i<MAX_SUBS; i++){
+        for(i=0; i<MAX_SUBS; i++)
+        {
             if(equal(S[i], pos))
                     EqualS = 1;
         }
-        if(!EqualS){
-            for(int i=0; i<MAX_SUBS; i++){
-                if(S[i].x == 0 && S[i].y == 0){
+        if(!EqualS)
+        {
+            for(i=0; i<MAX_SUBS; i++)
+            {
+                if(S[i].x == 0 && S[i].y == 0)
+                {
                     S[i] = pos;
                     *found = 0;
                     i=MAX_SUBS;
@@ -151,33 +221,48 @@ void Replace(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coo
             }
         }
         //(found ∧ pos ∈ S ∧ pos ̸∈ T) → (T = T ∪ {pos} ∧ Expand(pos))
-        else {
-            int EqualT = 0;
-
+        else 
+        {
             // check if pos is equal to T
-            for(int i=0; i<MAX_SUBS; i++){
+            for(i=0; i<MAX_SUBS; i++)
+            {
                 if(equal(T[i], pos))
                     EqualT = 1;
             }
-            if(!EqualT){
-                int trigger = 0;
-                for(int i=0; i<MAX_SUBS; i++){
-                    if(T[i].x == 0 && T[i].y == 0){
+            if(!EqualT)
+            {
+                for(i=0; i<MAX_SUBS; i++)
+                {
+                    if(T[i].x == 0 && T[i].y == 0)
+                    {
                         T[i] = pos;
                         trigger = 1;
                         i=MAX_SUBS;
                     }
                 }
-                if(trigger)
+                if(trigger && *found)
                     Expand(pos, R, B, S, T, *go, found);
             }
         }
     }
 }
 
-void Expand(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coordinate T[], int go, int *found){
-    // (a, b) = pos
+/**
+ * This function expands a coordinate to its adjacent positions and updates the player and shared sets
+ * It removes the original coordinate from sets, then calls Replace function on neighboring coordinates
+ * @param pos is the coordinate to expand from
+ * @param R is the array of coordinates for player R
+ * @param B is the array of coordinates for player B
+ * @param S is the shared set of coordinates
+ * @param T is the temporary set of coordinates
+ * @param go is the current turn flag (1 for R, 0 for B)
+ * @param found is a pointer to a flag indicating if a coordinate was captured during replacement
+ */
+void Expand(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coordinate T[], int go, int *found)
+{
     int a, b;
+
+    // (a, b) = pos
     a = pos.x;
     b = pos.y;
 
@@ -204,12 +289,14 @@ void Expand(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coor
     Remove(pos, R, B, S, T, go);
 
     // (go) → Replace(u)
-    if(go) {
+    if(go) 
+    {
         if(valid(u))
             Replace(u, R, B, S, T, &go, found);
     }
     // (¬go) → Replace(d)
-    else {
+    else 
+    {
         if(valid(d))
             Replace(d, R, B, S, T, &go, found);
     }
@@ -223,20 +310,26 @@ void Expand(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coor
         Replace(r, R, B, S, T, &go, found);
 }
 
-void Update(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coordinate T[], int go, int *found, int *good){
+void Update(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coordinate T[], int go, int *found, int *good)
+{
+    int EqualS = 0, EqualT = 0, i;
+
     // good = false
     *good = 0;
 
     // (pos ̸∈ S) → (S = S ∪ {pos} ∧ good = ¬good)
-    int EqualS = 0;
     // check if pos is equal to S
-    for(int i=0; i<MAX_SUBS; i++){
+    for(int i=0; i<MAX_SUBS; i++)
+    {
         if(equal(S[i], pos))
             EqualS = 1;
     }
-    if(!EqualS){
-        for(int i=0; i<MAX_SUBS; i++){
-            if(S[i].x == 0 && S[i].y == 0){
+    if(!EqualS)
+    {
+        for(i=0; i<MAX_SUBS; i++)
+        {
+            if(S[i].x == 0 && S[i].y == 0)
+            {
                 S[i] = pos;
                 *good = 1;
                 i=MAX_SUBS;
@@ -245,15 +338,18 @@ void Update(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coor
     }
 
     // (¬good ∧ pos ∈ S ∧ pos ̸∈ T) → (T = T ∪ {pos} ∧ Expand(pos))
-    int EqualT = 0;
     // check if pos is equal to T
-    for(int i=0; i<MAX_SUBS; i++){
+    for(i=0; i<MAX_SUBS; i++)
+    {
         if(equal(T[i], pos))
             EqualT = 1;
     }
-    if(!(*good) && EqualS && !EqualT) {
-        for(int i=0; i<MAX_SUBS; i++){
-            if(T[i].x == 0 && T[i].y == 0){
+    if(!(*good) && EqualS && !EqualT) 
+    {
+        for(i=0; i<MAX_SUBS; i++)
+        {
+            if(T[i].x == 0 && T[i].y == 0)
+            {
                 T[i] = pos;
                 Expand(pos, R, B, S, T, go, found);
                 i=MAX_SUBS;
@@ -263,13 +359,21 @@ void Update(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coor
 }
 
 void NextPlayerMove(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coordinate T[],
-                        int *go, int *good, int *start, int *val, int *over, int *found){
-    if(!(*over)) {
-        if(*start) {
+                        int *go, int *good, int *start, int *val, int *over, int *found)
+{
+    int i;
+
+    if(!(*over)) 
+    {
+        if(*start) 
+        {
             // (¬over ∧ start ∧ go) → (R = R ∪ {pos} ∧ S = S ∪ {pos} ∧ good = true)
-            if(*go) {
-                for(int i=0; i<MAX_SUBS; i++) {
-                    if(R[i].x == 0 && R[i].y == 0) {
+            if(*go) 
+            {
+                for(i=0; i<MAX_SUBS; i++) 
+                {
+                    if(R[i].x == 0 && R[i].y == 0) 
+                    {
                         R[i] = pos;
                         i=MAX_SUBS;
                     }
@@ -277,16 +381,20 @@ void NextPlayerMove(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S
             }
             // (¬over ∧ start ∧ ¬go) → (B = B ∪ {pos} ∧ S = S ∪ {pos} ∧ good = true)
             else {
-                for(int i=0; i<MAX_SUBS; i++) {
-                    if(B[i].x == 0 && B[i].y == 0) {
+                for(i=0; i<MAX_SUBS; i++) 
+                {
+                    if(B[i].x == 0 && B[i].y == 0) 
+                    {
                         B[i] = pos;
                         i=MAX_SUBS;
                     }
                 }    
             }
 
-            for(int i=0; i<MAX_SUBS; i++) {
-                if(S[i].x == 0 && S[i].y == 0) {
+            for(i=0; i<MAX_SUBS; i++) 
+            {
+                if(S[i].x == 0 && S[i].y == 0) 
+                {
                         S[i] = pos;
                         i=MAX_SUBS;
                 }     
@@ -295,16 +403,20 @@ void NextPlayerMove(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S
             *good = 1;
         }
         // (¬over ∧ ¬start ∧ (go ∧ pos ∈ R ∨ ¬go ∧ pos ∈ B)) → (Update(pos) ∧ good = true)
-        else{
-            for(int i=0; i<MAX_SUBS; i++) {
-                if((*go && equal(R[i], pos)) || (!(*go) && equal(B[i], pos))) {
+        else
+        {
+            for(i=0; i<MAX_SUBS; i++) 
+            {
+                if((*go && equal(R[i], pos)) || (!(*go) && equal(B[i], pos))) 
+                {
                     Update(pos, R, B, S, T, *go, found, good);
                     *good = 1;
                 }
             }
         }
         // (¬over ∧ good) → (good = ¬good ∧ go = ¬go ∧ val = val + 1)
-        if(*good) {
+        if(*good) 
+        {
             *good = 0;
             *go = !(*go);
             *val += 1;
@@ -314,7 +426,8 @@ void NextPlayerMove(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S
     }
 
     // (start ∧ |R| = 1 ∧ |B| = 1) → start = false
-    if(*start){
+    if(*start)
+    {
         int countR, countB;
     
         countR = cardinality(R);
@@ -325,7 +438,8 @@ void NextPlayerMove(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S
     }
 }
 
-void GameOver(Coordinate R[], Coordinate B[], char result[]){
+void GameOver(Coordinate R[], Coordinate B[], char result[])
+{
     // result ∈ {“R wins”, “B wins”, “draw”}
     int countR, countB;
 
@@ -344,36 +458,50 @@ void GameOver(Coordinate R[], Coordinate B[], char result[]){
            
 }
 
-void PrintBoard(Coordinate R[], Coordinate B[]) {
+/**
+ * This function prints the current state of the board 
+ * @param R is the array of coordinates for player R
+ * @param B is the array of coordinates for player B
+ * @param val is the number of moves made so far
+ */
+void PrintBoard(Coordinate R[], Coordinate B[], int val) 
+{
+    int i, j;
     char M[3][3];
 
-    printf("Board:\n\n");
+    printf("Board (Move %d):\n\n", val+1);
 
     // initialize
-    for(int i = 0; i < 3; i++) {
-        for(int j = 0; j < 3; j++) {
+    for(i = 0; i < 3; i++) {
+        for(j = 0; j < 3; j++) {
             M[i][j] = 'x';
         }
     }
 
     // place R
-    for(int i = 0; i < MAX_SUBS; i++) {
+    for(i = 0; i < MAX_SUBS; i++) {
         if(R[i].x != 0 && R[i].y != 0) {
             M[R[i].x - 1][R[i].y - 1] = 'R';
         }
     }
 
     // place B
-    for(int i = 0; i < MAX_SUBS; i++) {
+    for(i = 0; i < MAX_SUBS; i++) {
         if(B[i].x != 0 && B[i].y != 0) {
             M[B[i].x - 1][B[i].y - 1] = 'B';
         }
     }
 
+    // column label
+    printf("   1   2   3\n");
+
     // print board
-    for(int i = 0; i < 3; i++) {
-        for(int j = 0; j < 3; j++) {
-            printf(" %c ", M[i][j]);
+    for(i = 0; i < 3; i++) {
+        // row label
+        printf("%d", i+1);
+        
+        for(j = 0; j < 3; j++) {
+            printf("  %c ", M[i][j]);
         }
         printf("\n");
     }
@@ -387,9 +515,9 @@ int main(){
     char result[7];
 
     /* Variable Initialization */
-    good = 0; //false
     go = 1; //true
     start = 1; //true
+    good = 0; //false
     found = 0; //false
     over = 0; //false
     val = 0;
@@ -404,26 +532,29 @@ int main(){
         T[i] = (Coordinate){0,0};
     }
 
+    printf("\e[1;1H\e[2J"); // clear screen
     printf("Welcome to the Game!\n\n");
-    while(!over){
-        PrintBoard(R, B);
-        if(go){
+    while(!over)
+    {
+        PrintBoard(R, B, val);
+        if(go)
             printf("Player R, Choose a Position\n");
-        }
-        else if (!go){
+        else if (!go)
             printf("Player B, Choose a Position\n");
-        }
-        printf("X-Coordinate: ");
+
+        printf("Row: ");
         scanf("%d", &pos.x);
-        printf("Y-Coordinate: ");
+        printf("Column: ");
         scanf("%d", &pos.y);
         printf("\n");
 
-        if(valid(pos)){
+        if(valid(pos))
+        {
             NextPlayerMove(pos, R, B, S, T, &go, &good, &start, &val, &over, &found);
 
             sizeR = cardinality(R);
             sizeB = cardinality(B);
+
             //find intersection
             intersection = 0;
             for(int i=0; i<MAX_SUBS; i++){
@@ -432,6 +563,7 @@ int main(){
                         intersection++;
                 }
             }
+
             // M minus union of R and B
             sizeF = MAX_SUBS - ((sizeR+sizeB)-intersection);
 
@@ -441,7 +573,19 @@ int main(){
         }
         else
             printf("Enter a Valid Coordinate\n");
+
+        printf("\e[1;1H\e[2J");
     }
+
+    // check which condition to end game was met
+    if(sizeF==3)
+        printf("Only 3 Spaces Left Unoccupied.\n\n");
+    else if(val>=20) 
+        printf("20 Moves Reached.\n\n");
+    else if(!start && (sizeR>0 && sizeB==0))
+        printf("Blue Player Eliminated.\n\n");
+    else if (!start && (sizeR==0 && sizeB>0))
+        printf("Red Player Eliminated.\n\n");
     GameOver(R, B, result);
     printf("%s\n", result);
 
