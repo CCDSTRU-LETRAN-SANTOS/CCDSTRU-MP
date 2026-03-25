@@ -2,7 +2,7 @@
  * Authors           : Letran, Jessica C. (ID Number)
  *                   : Santos, Michaela Lynn L. (12505765)
  * Section           : S22A
- * Last Modified     : 03/22/26
+ * Last Modified     : 03/26/26
 */
 
 /* Preprocessor Directives */
@@ -120,7 +120,7 @@ void Remove(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coor
 /**
  * This function replaces a coordinate in the player sets depending on the current turn
  * This handles capturing opponent pieces, updating shared sets, and triggers expansion
- * @param pos is the coordinate to process
+ * @param pos is the chosen coordinate input by the player
  * @param R is the array of coordinates for player R
  * @param B is the array of coordinates for player B
  * @param S is the shared set of coordinates
@@ -250,10 +250,10 @@ void Replace(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coo
 /**
  * This function expands a coordinate to its adjacent positions and updates the player and shared sets
  * It removes the original coordinate from sets, then calls Replace function on neighboring coordinates
- * @param pos is the coordinate to expand from
+ * @param pos is the chosen coordinate input by the player
  * @param R is the array of coordinates for player R
  * @param B is the array of coordinates for player B
- * @param S is the shared set of coordinates
+ * @param S is the shared set of coordinates 
  * @param T is the temporary set of coordinates
  * @param go is the current turn flag (1 for R, 0 for B)
  * @param found is a pointer to a flag indicating if a coordinate was captured during replacement
@@ -310,14 +310,15 @@ void Expand(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coor
         Replace(r, R, B, S, T, &go, found);
 }
 
-/* 
+/** 
  * This function updates the state sets S and T based on the selected position 
- * @param pos is the chosen coordinate on the board 
+ * @param pos is the chosen coordinate input by the player
  * @param R is the array of coordinates for player R 
  * @param B is the array of coordinates for player B 
- * @param S is the shared set of coordinates * @param T is the temporary set of coordinates 
+ * @param S is the shared set of coordinates (visited positions)
+ * @param T is the temporary set of coordinates (expanded positions)
  * @param go is the current turn flag (1 for R, 0 for B) 
- * @param found is a pointer to a flag indicating if the position interaction condition was met 
+ * @param found is a pointer to a flag indicating if replace condition was triggered
  * @param good is a pointer to indicate if the move is valid and accepted 
  */
 void Update(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coordinate T[], int go, int *found, int *good)
@@ -368,7 +369,7 @@ void Update(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coor
     }
 }
 
-/*
+/** 
  * This function processes the player's move and updates the overall game state
  * @param pos is the chosen coordinate input by the player
  * @param R is the array of coordinates for player R
@@ -462,7 +463,7 @@ void NextPlayerMove(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S
     }
 }
 
-/*
+/** 
  * This function determines the result of the game based on the final sets
  * @param R is the array of coordinates for player R
  * @param B is the array of coordinates for player B
