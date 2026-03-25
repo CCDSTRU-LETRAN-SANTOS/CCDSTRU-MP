@@ -310,6 +310,16 @@ void Expand(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coor
         Replace(r, R, B, S, T, &go, found);
 }
 
+/* 
+ * This function updates the state sets S and T based on the selected position 
+ * @param pos is the chosen coordinate on the board 
+ * @param R is the array of coordinates for player R 
+ * @param B is the array of coordinates for player B 
+ * @param S is the shared set of coordinates * @param T is the temporary set of coordinates 
+ * @param go is the current turn flag (1 for R, 0 for B) 
+ * @param found is a pointer to a flag indicating if the position interaction condition was met 
+ * @param good is a pointer to indicate if the move is valid and accepted 
+ */
 void Update(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coordinate T[], int go, int *found, int *good)
 {
     int EqualS = 0, EqualT = 0, i;
@@ -358,6 +368,20 @@ void Update(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coor
     }
 }
 
+/*
+ * This function processes the player's move and updates the overall game state
+ * @param pos is the chosen coordinate input by the player
+ * @param R is the array of coordinates for player R
+ * @param B is the array of coordinates for player B
+ * @param S is the shared set of coordinates (visited positions)
+ * @param T is the temporary set of coordinates (expanded positions)
+ * @param go is a pointer to the current turn flag (1 for R, 0 for B)
+ * @param good is a pointer indicating if the move is valid and accepted
+ * @param start is a pointer indicating if the game is still in the initial placement phase
+ * @param val is a pointer to the number of valid moves made so far
+ * @param over is a pointer indicating whether the game has ended
+ * @param found is a pointer to a flag indicating if a replace condition was triggered
+ */
 void NextPlayerMove(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coordinate T[],
                         int *go, int *good, int *start, int *val, int *over, int *found)
 {
@@ -438,6 +462,12 @@ void NextPlayerMove(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S
     }
 }
 
+/*
+ * This function determines the result of the game based on the final sets
+ * @param R is the array of coordinates for player R
+ * @param B is the array of coordinates for player B
+ * @param result is a character array where the game outcome will be stored
+ */
 void GameOver(Coordinate R[], Coordinate B[], char result[])
 {
     // result ∈ {“R wins”, “B wins”, “draw”}
@@ -462,7 +492,7 @@ void GameOver(Coordinate R[], Coordinate B[], char result[])
  * This function prints the current state of the board 
  * @param R is the array of coordinates for player R
  * @param B is the array of coordinates for player B
- * @param val is the number of moves made so far
+ * @param val is the number of valid moves made so far
  */
 void PrintBoard(Coordinate R[], Coordinate B[], int val) 
 {
