@@ -1,5 +1,5 @@
 /*
- * Authors           : Letran, Jessica C. (ID Number)
+ * Authors           : Letran, Jessica C. (12505757)
  *                   : Santos, Michaela Lynn L. (12505765)
  * Section           : S22A
  * Last Modified     : 03/26/26
@@ -619,19 +619,18 @@ int main(){
             printf("Enter a Valid Coordinate\n");
 	
 		PrintBoard(R, B, val);
-		
-        printf("\e[1;1H\e[2J");
     }
 
     // check which condition to end game was met
     if(sizeF==3)
-        printf("Only 3 Spaces Left Unoccupied.\n\n");
+        printf("\n--- Only 3 Spaces Left Unoccupied ---\n\n");
     else if(val>=20) 
-        printf("20 Moves Reached.\n\n");
+        printf("\n--- 20 Moves Reached ---\n\n");
     else if(!start && (sizeR>0 && sizeB==0))
-        printf("Blue Player Eliminated.\n\n");
+        printf("\n--- Blue Player Eliminated ---\n\n");
     else if (!start && (sizeR==0 && sizeB>0))
-        printf("Red Player Eliminated.\n\n");
+        printf("\n--- Red Player Eliminated ---\n\n");
+
     GameOver(R, B, result);
     printf("%s\n", result);
 
