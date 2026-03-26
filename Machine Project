@@ -500,7 +500,7 @@ void PrintBoard(Coordinate R[], Coordinate B[], int val)
     int i, j;
     char M[3][3];
 
-    printf("Board (Move %d):\n\n", val+1);
+    printf("Board (Move %d):\n\n", val);
 
     // initialize
     for(i = 0; i < 3; i++) {
@@ -536,7 +536,6 @@ void PrintBoard(Coordinate R[], Coordinate B[], int val)
         }
         printf("\n");
     }
-    printf("\n");
 }
 
 int main(){
@@ -555,7 +554,7 @@ int main(){
     sizeR = 0;
     sizeB = 0; 
     sizeF = 0;
-    // R, B, S, T = ∅
+    // R, B, S, T = Ø
     for(int i=0; i<MAX_SUBS; i++){
         R[i] = (Coordinate){0,0};
         B[i] = (Coordinate){0,0};
@@ -565,20 +564,34 @@ int main(){
 
     printf("\e[1;1H\e[2J"); // clear screen
     printf("Welcome to the Game!\n\n");
+    printf("Board:\n\n");
+    // column label
+    printf("   1   2   3\n");
+
+    // print board
+    for(int i = 0; i < 3; i++) {
+        // row label
+        printf("%d", i+1);
+        
+        for(int j = 0; j < 3; j++) {
+            printf("  x ");
+        }
+        printf("\n");
+    }
+    
     while(!over)
     {
-        PrintBoard(R, B, val);
         if(go)
-            printf("Player R, Choose a Position\n");
+            printf("\nPlayer R, Choose a Position\n");
         else if (!go)
-            printf("Player B, Choose a Position\n");
-
+            printf("\nPlayer B, Choose a Position\n");
+		
         printf("Row: ");
         scanf("%d", &pos.x);
         printf("Column: ");
         scanf("%d", &pos.y);
         printf("\n");
-
+		
         if(valid(pos))
         {
             NextPlayerMove(pos, R, B, S, T, &go, &good, &start, &val, &over, &found);
@@ -604,7 +617,9 @@ int main(){
         }
         else
             printf("Enter a Valid Coordinate\n");
-
+	
+		PrintBoard(R, B, val);
+		
         printf("\e[1;1H\e[2J");
     }
 
