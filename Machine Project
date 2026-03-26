@@ -563,7 +563,7 @@ int main(){
     }
 
     printf("\e[1;1H\e[2J"); // clear screen
-    printf("Welcome to the Game!\n\n");
+    printf("Welcome to Chain Reaction!\n\n");
     printf("Board:\n\n");
     // column label
     printf("   1   2   3\n");
