@@ -1,8 +1,8 @@
 /*
- * Authors           : Letran, Jessica C. (12505757)
+ * Authors           : Letran, Jessica C. (ID Number)
  *                   : Santos, Michaela Lynn L. (12505765)
  * Section           : S22A
- * Last Modified     : 03/26/26
+ * Last Modified     : 03/27/26
 */
 
 /* Preprocessor Directives */
@@ -130,7 +130,7 @@ void Remove(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coor
  */
 void Replace(Coordinate pos, Coordinate R[], Coordinate B[], Coordinate S[], Coordinate T[], int *go, int *found)
 {
-    int EqualR=0, EqualB=0, EqualS=0, EqualT=0, trigger = 0, i;
+    int EqualR = 0, EqualB = 0, EqualS = 0, EqualT = 0, trigger = 0, i;
 
     //found = false
     *found = 0;
@@ -479,10 +479,10 @@ void GameOver(Coordinate R[], Coordinate B[], char result[])
 
     // (over ∧ |R| > |B|) → result = “R wins”
     if(countR > countB) 
-        strcpy(result, "R wins");
+        strcpy(result, "R Wins!");
     // (over ∧ |R| < |B|) → result = “B wins”
     else if(countR < countB) 
-        strcpy(result, "B wins");
+        strcpy(result, "B Wins!");
     // (over ∧ |R| = |B|) → result = “draw”
     else
         strcpy(result, "draw");
@@ -529,10 +529,16 @@ void PrintBoard(Coordinate R[], Coordinate B[], int val)
     // print board
     for(i = 0; i < 3; i++) {
         // row label
-        printf("%d", i+1);
+        printf("%d", i + 1);
         
         for(j = 0; j < 3; j++) {
-            printf("  %c ", M[i][j]);
+            if(M[i][j] == 'R') {
+                printf("  \033[31m%c\033[0m ", M[i][j]);
+            } else if(M[i][j] == 'B') {
+                printf("  \033[34m%c\033[0m ", M[i][j]);
+            } else {
+                printf("  %c ", M[i][j]); // default
+            }
         }
         printf("\n");
     }
@@ -540,9 +546,9 @@ void PrintBoard(Coordinate R[], Coordinate B[], int val)
 
 int main(){
     /* Variable Implementation */
-    int val, good, go, start, over, found, sizeR, sizeB, sizeF, intersection;
+    int val, good, go, start, over, found, sizeR, sizeB, sizeF, intersection, nMenu;
     Coordinate R[MAX_SUBS], B[MAX_SUBS], S[MAX_SUBS], T[MAX_SUBS], pos;
-    char result[7];
+    char result[8];
 
     /* Variable Initialization */
     go = 1; //true
@@ -554,85 +560,173 @@ int main(){
     sizeR = 0;
     sizeB = 0; 
     sizeF = 0;
+    nMenu = 0;
     // R, B, S, T = Ø
-    for(int i=0; i<MAX_SUBS; i++){
+    for(int i=0; i<MAX_SUBS; i++)
+    {
         R[i] = (Coordinate){0,0};
         B[i] = (Coordinate){0,0};
         S[i] = (Coordinate){0,0};
         T[i] = (Coordinate){0,0};
     }
 
-    printf("\e[1;1H\e[2J"); // clear screen
-    printf("Welcome to Chain Reaction!\n\n");
-    printf("Board:\n\n");
-    // column label
-    printf("   1   2   3\n");
-
-    // print board
-    for(int i = 0; i < 3; i++) {
-        // row label
-        printf("%d", i+1);
-        
-        for(int j = 0; j < 3; j++) {
-            printf("  x ");
-        }
-        printf("\n");
-    }
-    
-    while(!over)
+    while(nMenu!=3)
     {
-        if(go)
-            printf("\nPlayer R, Choose a Position\n");
-        else if (!go)
-            printf("\nPlayer B, Choose a Position\n");
-		
-        printf("Row: ");
-        scanf("%d", &pos.x);
-        printf("Column: ");
-        scanf("%d", &pos.y);
-        printf("\n");
-		
-        if(valid(pos))
+    printf("\e[1;1H\e[2J"); // clear screen
+    printf(" . \\  :  /       \\  :  /       \\  :  /       \\  :  /       \\  :  /\n");
+    printf("`. __/ \\__ .' `. __/ \\__ .' `. __/ \\__ .' `. __/ \\__ .' `. __/ \\__ .'\n");
+    printf("_ _\\     /_ _ _ _\\     /_ _ _ _\\     /_ _ _ _\\     /_ _ _ _\\     /_ _\n");
+    printf("   /_   _\\       /_   _\\       /_   _\\       /_   _\\       /_   _\\\n");
+    printf(" .'  \\ /  `.   .'  \\ /  `.   .'  \\ /  `.   .'  \\ /  `.   .'  \\ /  `.\n");
+    printf("   /  |  \\       /  :  \\       /  :  \\       /  :  \\       /  |  \\\n");
+    printf("      |                                                       |\n");
+    printf("      |              Welcome to Chain Reaction!               |\n");
+    printf("      |                                                       |\n");
+    printf("      |                [1] Start Game                         |\n");
+    printf("      |                [2] Learn How to Play                  |\n");
+    printf("      |                [3] Exit                               |\n");
+    printf("      |                                                       |\n");
+    printf("   \\  |  /       \\  :  /       \\  :  /       \\  :  /       \\  |  /\n");
+    printf("`. __/ \\__ .' `. __/ \\__ .' `. __/ \\__ .' `. __/ \\__ .' `. __/ \\__ .'\n");
+    printf("_ _\\     /_ _ _ _\\     /_ _ _ _\\     /_ _ _ _\\     /_ _ _ _\\     /_ _\n");
+    printf("   /_   _\\       /_   _\\       /_   _\\       /_   _\\       /_   _\\\n");
+    printf(" .'  \\ /  `.   .'  \\ /  `.   .'  \\ /  `.   .'  \\ /  `.   .'  \\ /  `.\n");
+    printf("   /  :  \\       /  :  \\       /  :  \\       /  :  \\       /  :  \\\n\n\n");
+    printf(">> ");
+    scanf("%d", &nMenu); 
+        if(nMenu==1)
         {
-            NextPlayerMove(pos, R, B, S, T, &go, &good, &start, &val, &over, &found);
+            printf("\e[1;1H\e[2J");
+            printf("Board:\n\n");
+            // column label
+            printf("   1   2   3\n");
 
-            sizeR = cardinality(R);
-            sizeB = cardinality(B);
-
-            //find intersection
-            intersection = 0;
-            for(int i=0; i<MAX_SUBS; i++){
-                for(int j=0; j<MAX_SUBS; j++){
-                    if(equal(R[i], B[j]) && R[i].x != 0 && R[i].y != 0)
-                        intersection++;
+            // print board
+            for(int i = 0; i < 3; i++) {
+                // row label
+                printf("%d", i+1);
+                
+                for(int j = 0; j < 3; j++) {
+                    printf("  x ");
                 }
+                printf("\n");
+            }
+            
+            while(!over)
+            {
+                if(go)
+                    printf("\nPlayer R, Choose a Position\n");
+                else if (!go)
+                    printf("\nPlayer B, Choose a Position\n");
+                
+                printf("Row: ");
+                scanf("%d", &pos.x);
+                printf("Column: ");
+                scanf("%d", &pos.y);
+                printf("\n");
+                
+                if(valid(pos))
+                {
+                    NextPlayerMove(pos, R, B, S, T, &go, &good, &start, &val, &over, &found);
+
+                    sizeR = cardinality(R);
+                    sizeB = cardinality(B);
+
+                    //find intersection
+                    intersection = 0;
+                    for(int i=0; i<MAX_SUBS; i++){
+                        for(int j=0; j<MAX_SUBS; j++){
+                            if(equal(R[i], B[j]) && R[i].x != 0 && R[i].y != 0)
+                                intersection++;
+                        }
+                    }
+
+                    // M minus union of R and B
+                    sizeF = MAX_SUBS - ((sizeR+sizeB)-intersection);
+
+                    //check conditions to end game
+                    if(sizeF==3 || val>=20 || (!start && ((sizeR>0 && sizeB==0) || (sizeR==0 && sizeB>0))))
+                        over = 1;
+                }
+                else
+                    printf("Enter a Valid Coordinate\n");
+            
+                PrintBoard(R, B, val);
             }
 
-            // M minus union of R and B
-            sizeF = MAX_SUBS - ((sizeR+sizeB)-intersection);
+            // check which condition to end game was met
+            if(sizeF==3)
+                printf("\n--- Only 3 Spaces Left Unoccupied ---\n\n");
+            else if(val>=20) 
+                printf("\n--- 20 Moves Reached ---\n\n");
+            else if(!start && (sizeR>0 && sizeB==0))
+                printf("\n--- Blue Player Eliminated ---\n\n");
+            else if (!start && (sizeR==0 && sizeB>0))
+                printf("\n--- Red Player Eliminated ---\n\n");
 
-            //check conditions to end game
-            if(sizeF==3 || val>=20 || (!start && ((sizeR>0 && sizeB==0) || (sizeR==0 && sizeB>0))))
-                over = 1;
+            GameOver(R, B, result);
+            if(strcmp(result, "R Wins!") == 0)
+                printf("\033[31m%s\033[0m\n", result);
+            else if(strcmp(result, "B Wins!") == 0) 
+                printf("\033[94m%s\033[0m\n", result);
+            else 
+                printf("%s\n", result);
+
+            printf("\nEnter Any Key to Go Back to Main Menu\n");
+            getchar();
+            getchar();
+
+            // reset
+            go = 1; 
+            start = 1; 
+            good = 0; 
+            found = 0;
+            over = 0;
+            val = 0;
+            sizeR = 0;
+            sizeB = 0; 
+            sizeF = 0;
+            for(int i=0; i<MAX_SUBS; i++)
+            {
+            R[i] = (Coordinate){0,0};
+            B[i] = (Coordinate){0,0};
+            S[i] = (Coordinate){0,0};
+            T[i] = (Coordinate){0,0};
+            }
         }
-        else
-            printf("Enter a Valid Coordinate\n");
-	
-		PrintBoard(R, B, val);
+        else if(nMenu==2)
+        {
+            printf("\e[1;1H\e[2J");
+            printf(" . \\  :  /       \\  :  /       \\  :  /       \\  :  /       \\  :  /\n");
+            printf("`. __/ \\__ .' `. __/ \\__ .' `. __/ \\__ .' `. __/ \\__ .' `. __/ \\__ .'\n");
+            printf("_ _\\     /_ _ _ _\\     /_ _ _ _\\     /_ _ _ _\\     /_ _ _ _\\     /_ _\n");
+            printf("   /_   _\\       /_   _\\       /_   _\\       /_   _\\       /_   _\\\n");
+            printf(" .'  \\ /  `.   .'  \\ /  `.   .'  \\ /  `.   .'  \\ /  `.   .'  \\ /  `.\n");
+            printf("   /  |  \\       /  :  \\       /  :  \\       /  :  \\       /  |  \\\n");
+            printf("      |                                                       |\n");
+            printf("      |                                                       |\n");
+            printf("      |    Chain Reaction is a tactical board game for        |\n"); 
+            printf("      |    two players. Start by placing your first piece,    |\n"); 
+            printf("      |    then take turns expanding your pieces to capture   |\n"); 
+            printf("      |    your opponent'’s spots. The game ends when one of  |\n"); 
+            printf("      |    these conditions are met: a player is eliminated,  |\n"); 
+            printf("      |    only three spaces are left, or after 20 moves.     |\n"); 
+            printf("      |    The goal is gain more spots than your opponent!    |\n"); 
+            printf("      |                    Ready to Play?                     |\n");
+            printf("      |                                                       |\n");
+            printf("      |                Enter Any Key to Go Back               |\n");
+            printf("      |                                                       |\n");
+            printf("   \\  |  /       \\  :  /       \\  :  /       \\  :  /       \\  |  /\n");
+            printf("`. __/ \\__ .' `. __/ \\__ .' `. __/ \\__ .' `. __/ \\__ .' `. __/ \\__ .'\n");
+            printf("_ _\\     /_ _ _ _\\     /_ _ _ _\\     /_ _ _ _\\     /_ _ _ _\\     /_ _\n");
+            printf("   /_   _\\       /_   _\\       /_   _\\       /_   _\\       /_   _\\\n");
+            printf(" .'  \\ /  `.   .'  \\ /  `.   .'  \\ /  `.   .'  \\ /  `.   .'  \\ /  `.\n");
+            printf("   /  :  \\       /  :  \\       /  :  \\       /  :  \\       /  :  \\\n\n\n");
+            getchar();
+            getchar();
+        }
+        else if(nMenu==3)
+            printf("\nExiting Game...Thank You for Playing!\n");
     }
-
-    // check which condition to end game was met
-    if(sizeF==3)
-        printf("\n--- Only 3 Spaces Left Unoccupied ---\n\n");
-    else if(val>=20) 
-        printf("\n--- 20 Moves Reached ---\n\n");
-    else if(!start && (sizeR>0 && sizeB==0))
-        printf("\n--- Blue Player Eliminated ---\n\n");
-    else if (!start && (sizeR==0 && sizeB>0))
-        printf("\n--- Red Player Eliminated ---\n\n");
-
-    GameOver(R, B, result);
-    printf("%s\n", result);
-
     return 0;
 }
