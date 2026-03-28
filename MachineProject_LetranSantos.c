@@ -67,6 +67,18 @@ int cardinality(Coordinate p[MAX_SUBS])
     return size;
 }
 
+/** 
+ * This function centers the text to be printed
+ * @param text is a pointer to a string
+ */
+void printCentered(char* text){
+	int len = strlen(text);
+	int padding = (47 - len) / 2;
+	if (padding < 0) // avoid negative, ie. %-10s
+		padding = 0;
+	printf("\n%*s%s\n", padding, "", text);
+}
+
 /* Function Implementations */
 
 /**
@@ -661,15 +673,17 @@ int main(){
                 printf("\n- - - - - - - - - - - - - - - - - - - - - - - -\n");
             }
 
+            printCentered("GAME OVER");
+
             // check which condition to end game was met
             if(sizeF==3)
-                printf("\n--- Only 3 Spaces Left Unoccupied ---\n\n");
+                printCentered("--- Only 3 Spaces Left Unoccupied ---");
             else if(val>=20) 
-                printf("\n--- 20 Moves Reached ---\n\n");
+                printCentered("--- 20 Moves Reached ---");
             else if(!start && (sizeR>0 && sizeB==0))
-                printf("\n--- Blue Player Eliminated ---\n\n");
+                printCentered("--- Blue Player Eliminated ---");
             else if (!start && (sizeR==0 && sizeB>0))
-                printf("\n--- Red Player Eliminated ---\n\n");
+            printCentered("--- Red Player Eliminated ---");
 
             GameOver(R, B, result);
             if(strcmp(result, "R Wins!") == 0)
