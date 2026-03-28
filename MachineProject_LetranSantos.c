@@ -2,7 +2,7 @@
  * Authors           : Letran, Jessica C. (ID Number)
  *                   : Santos, Michaela Lynn L. (12505765)
  * Section           : S22A
- * Last Modified     : 03/27/26
+ * Last Modified     : 03/28/26
 */
 
 /* Preprocessor Directives */
@@ -65,18 +65,6 @@ int cardinality(Coordinate p[MAX_SUBS])
             size++;
     }
     return size;
-}
-
-/** 
- * This function centers the text to be printed
- * @param text is a pointer to a string
- */
-void printCentered(char* text){
-	int len = strlen(text);
-	int padding = (47 - len) / 2;
-	if (padding < 0) // avoid negative, ie. %-10s
-		padding = 0;
-	printf("\n%*s%s\n", padding, "", text);
 }
 
 /* Function Implementations */
@@ -507,30 +495,36 @@ void GameOver(Coordinate R[], Coordinate B[], char result[])
  * @param B is the array of coordinates for player B
  * @param val is the number of valid moves made so far
  */
-void PrintBoard(Coordinate R[], Coordinate B[], int val) 
+void PrintBoard(Coordinate R[], Coordinate B[], Coordinate S[], int val) 
 {
-    int i, j;
+    int i, j, k, nShared;
     char M[3][3];
 
     printf("Board (Move %d):\n\n", val);
 
     // initialize
-    for(i = 0; i < 3; i++) {
-        for(j = 0; j < 3; j++) {
+    for(i = 0; i < 3; i++) 
+    {
+        for(j = 0; j < 3; j++) 
+        {
             M[i][j] = 'x';
         }
     }
 
     // place R
-    for(i = 0; i < MAX_SUBS; i++) {
-        if(R[i].x != 0 && R[i].y != 0) {
+    for(i = 0; i < MAX_SUBS; i++) 
+    {
+        if(R[i].x != 0 && R[i].y != 0) 
+        {
             M[R[i].x - 1][R[i].y - 1] = 'R';
         }
     }
 
     // place B
-    for(i = 0; i < MAX_SUBS; i++) {
-        if(B[i].x != 0 && B[i].y != 0) {
+    for(i = 0; i < MAX_SUBS; i++) 
+    {
+        if(B[i].x != 0 && B[i].y != 0) 
+        {
             M[B[i].x - 1][B[i].y - 1] = 'B';
         }
     }
@@ -539,16 +533,38 @@ void PrintBoard(Coordinate R[], Coordinate B[], int val)
     printf("   1   2   3\n");
 
     // print board
-    for(i = 0; i < 3; i++) {
+    for(i = 0; i < 3; i++) 
+    {
         // row label
         printf("%d", i + 1);
         
-        for(j = 0; j < 3; j++) {
-            if(M[i][j] == 'R') {
-                printf("  \033[31m%c\033[0m ", M[i][j]);
-            } else if(M[i][j] == 'B') {
-                printf("  \033[34m%c\033[0m ", M[i][j]);
-            } else {
+        for(j = 0; j < 3; j++) 
+        {
+            nShared = 0;
+            for(k = 0; k < MAX_SUBS; k++) 
+            {
+                if(S[k].x == i + 1 && S[k].y == j + 1) 
+                {
+                    nShared = 1;
+                    k = MAX_SUBS; 
+                }
+            }
+            if(M[i][j] == 'R') 
+            {
+                if(nShared)
+                    printf("  %c ", M[i][j]);
+                else
+                    printf("  \033[31m%c\033[0m ", M[i][j]);
+            } 
+            else if(M[i][j] == 'B') 
+            {
+                if(nShared)
+                    printf("  %c ", M[i][j]);
+                else
+                    printf("  \033[34m%c\033[0m ", M[i][j]);
+            } 
+            else 
+            {
                 printf("  %c ", M[i][j]); // default
             }
         }
@@ -609,6 +625,11 @@ int main(){
         if(nMenu==1)
         {
             printf("\e[1;1H\e[2J");
+            printf("\nLegends:\n");
+            printf(" | Red/Blue Colored Player Spaces -> cannot expand yet\n");
+            printf(" | White Colored Player Spaces -> can expand\n");
+
+            printf("\n- - - - - - - - - - - - - - - - - - - - - - - - - - -\n");
             printf("Board:\n\n");
             // column label
             printf("   1   2   3\n");
@@ -624,11 +645,7 @@ int main(){
                 printf("\n");
             }
 
-            printf("\nLegends:\n");
-            printf(" | White player spaces -> cannot expand yet\n");
-            printf(" | Red/Blue player spaces -> can expand already\n");
-
-            printf("\n- - - - - - - - - - - - - - - - - - - - - - - -\n");
+            printf("\n- - - - - - - - - - - - - - - - - - - - - - - - - - -\n");
 
             while(!over)
             {
@@ -669,21 +686,19 @@ int main(){
                 else
                     printf("Enter a Valid Coordinate\n");
             
-                PrintBoard(R, B, val);
-                printf("\n- - - - - - - - - - - - - - - - - - - - - - - -\n");
+                PrintBoard(R, B, S, val);
+                printf("\n- - - - - - - - - - - - - - - - - - - - - - - - - - -\n");
             }
-
-            printCentered("GAME OVER");
 
             // check which condition to end game was met
             if(sizeF==3)
-                printCentered("--- Only 3 Spaces Left Unoccupied ---");
+                printf("\n- - - Only 3 Spaces Left Unoccupied - - -\n\n");
             else if(val>=20) 
-                printCentered("--- 20 Moves Reached ---");
+                printf("\n- - - 20 Moves Reached - - -\n\n");
             else if(!start && (sizeR>0 && sizeB==0))
-                printCentered("--- Blue Player Eliminated ---");
+                printf("\n- - - Blue Player Eliminated - - -\n\n");
             else if (!start && (sizeR==0 && sizeB>0))
-            printCentered("--- Red Player Eliminated ---");
+                printf("\n- - - Red Player Eliminated - - -\n\n");
 
             GameOver(R, B, result);
             if(strcmp(result, "R Wins!") == 0)
@@ -735,7 +750,7 @@ int main(){
             printf("      |     The goal is gain more spaces than your opponent!  |\n"); 
             printf("      |                      Ready to Play?                   |\n");
             printf("      |                                                       |\n");
-            printf("      |                 Enter Any Key to Go Back               |\n");
+            printf("      |                 Enter Any Key to Go Back              |\n");
             printf("      |                                                       |\n");
             printf("   \\  |  /       \\  :  /       \\  :  /       \\  :  /       \\  |  /\n");
             printf("`. __/ \\__ .' `. __/ \\__ .' `. __/ \\__ .' `. __/ \\__ .' `. __/ \\__ .'\n");
