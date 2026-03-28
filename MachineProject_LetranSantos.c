@@ -1,5 +1,5 @@
 /*
- * Authors           : Letran, Jessica C. (ID Number)
+ * Authors           : Letran, Jessica C. (12505757)
  *                   : Santos, Michaela Lynn L. (12505765)
  * Section           : S22A
  * Last Modified     : 03/28/26
@@ -65,6 +65,18 @@ int cardinality(Coordinate p[MAX_SUBS])
             size++;
     }
     return size;
+}
+
+/**
+ * This function centers the text to be printed
+ * @param text is a pointer to a string
+ */
+void printCentered(char* text){
+	int len = strlen(text);
+	int padding = (47 - len) / 2;
+	if (padding < 0) // avoid negative, ie. %-10s
+		padding = 0;
+	printf("\n%*s%s\n", padding, "", text);
 }
 
 /* Function Implementations */
@@ -626,7 +638,7 @@ int main(){
         {
             printf("\e[1;1H\e[2J");
             printf("\nLegends:\n");
-            printf(" | Red/Blue Colored Player Spaces -> cannot expand yet\n");
+            printf(" | Red|Blue Colored Player Spaces -> cannot expand yet\n");
             printf(" | White Colored Player Spaces -> can expand\n");
 
             printf("\n- - - - - - - - - - - - - - - - - - - - - - - - - - -\n");
@@ -692,21 +704,33 @@ int main(){
 
             // check which condition to end game was met
             if(sizeF==3)
-                printf("\n- - - Only 3 Spaces Left Unoccupied - - -\n\n");
+                printCentered("- - - Only 3 Spaces Left Unoccupied - - -");
             else if(val>=20) 
-                printf("\n- - - 20 Moves Reached - - -\n\n");
+                printCentered("- - - 20 Moves Reached - - -");
             else if(!start && (sizeR>0 && sizeB==0))
-                printf("\n- - - Blue Player Eliminated - - -\n\n");
+                printCentered("- - - Blue Player Eliminated - - -");
             else if (!start && (sizeR==0 && sizeB>0))
-                printf("\n- - - Red Player Eliminated - - -\n\n");
+                printCentered("- - - Red Player Eliminated - - -");
+
+            printCentered("- GAME OVER -");
 
             GameOver(R, B, result);
             if(strcmp(result, "R Wins!") == 0)
-                printf("\033[31m%s\033[0m\n", result);
+            {
+                printf("\033[31m");
+                printCentered(result);
+                printf("\033[0m\n");
+            }
             else if(strcmp(result, "B Wins!") == 0) 
-                printf("\033[94m%s\033[0m\n", result);
+            {
+                printf("\033[94m");
+                printCentered(result);
+                printf("\033[0m\n");
+            }
             else 
                 printf("%s\n", result);
+
+            printf("- - - - - - - - - - - - - - - - - - - - - - - - - - -\n");
 
             printf("\nEnter Any Key to Go Back to Main Menu\n");
             getchar();
@@ -744,7 +768,7 @@ int main(){
             printf("      |      Chain Reaction is a tactical board game for      |\n"); 
             printf("      |    two players. Start by placing your first piece,    |\n"); 
             printf("      |    then take turns expanding your pieces to capture   |\n"); 
-            printf("      |    your opponent\'s spots. The game ends when one of  |\n"); 
+            printf("      |    your opponent\'s spots. The game ends when one of   |\n"); 
             printf("      |    these conditions are met: a player is eliminated,  |\n"); 
             printf("      |     only three spaces are left, or after 20 moves.    |\n"); 
             printf("      |     The goal is gain more spaces than your opponent!  |\n"); 
