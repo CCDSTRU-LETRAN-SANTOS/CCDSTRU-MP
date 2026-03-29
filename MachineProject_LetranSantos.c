@@ -2,7 +2,7 @@
  * Authors           : Letran, Jessica C. (12505757)
  *                   : Santos, Michaela Lynn L. (12505765)
  * Section           : S22A
- * Last Modified     : 03/28/26
+ * Last Modified     : 03/29/26
 */
 
 /* Preprocessor Directives */
@@ -662,9 +662,9 @@ int main(){
             while(!over)
             {
                 if(go)
-                    printf("\nPlayer R, Choose a Position\n");
+                    printf("\n\033[31mPlayer R\033[0m, Choose a Position\n");
                 else if (!go)
-                    printf("\nPlayer B, Choose a Position\n");
+                    printf("\n\033[34mPlayer B\033[0m, Choose a Position\n");
                 
                 printf("Row: ");
                 scanf("%d", &pos.x);
