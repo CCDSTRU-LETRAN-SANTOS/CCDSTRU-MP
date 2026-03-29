@@ -771,10 +771,10 @@ int main(){
             printf("      |    your opponent\'s spots. The game ends when one of   |\n"); 
             printf("      |    these conditions are met: a player is eliminated,  |\n"); 
             printf("      |     only three spaces are left, or after 20 moves.    |\n"); 
-            printf("      |     The goal is gain more spaces than your opponent!  |\n"); 
-            printf("      |                      Ready to Play?                   |\n");
+            printf("      |    The goal is gain more spaces than your opponent!   |\n"); 
+            printf("      |                     Ready to Play?                    |\n");
             printf("      |                                                       |\n");
-            printf("      |                 Enter Any Key to Go Back              |\n");
+            printf("      |                Enter Any Key to Go Back               |\n");
             printf("      |                                                       |\n");
             printf("   \\  |  /       \\  :  /       \\  :  /       \\  :  /       \\  |  /\n");
             printf("`. __/ \\__ .' `. __/ \\__ .' `. __/ \\__ .' `. __/ \\__ .' `. __/ \\__ .'\n");
